@@ -163,7 +163,6 @@ class InputfieldPage extends Inputfield implements ConfigurableModule {
 	 * 
 	 */
 	public function setAttribute($key, $value) {
-
 		if($key == 'value') { 
 			if(is_string($value) || is_int($value)) {
 				// setting the value attr from a string, whether 1234 or 123|446|789
@@ -802,6 +801,13 @@ class InputfieldPage extends Inputfield implements ConfigurableModule {
 		$this->pagesAdded = $this->wire('pages')->newPageArray();
 		$parent_id = $this->getSetting('parent_id');
 		$template_id = $this->getSetting('template_id');
+		
+		$templates_id_selector = '';
+		if(is_array($template_id)) {
+			$templates_id_selector = implode('|', $template_id);
+		} else {
+			$templates_id_selector = $template_id;
+		}
 
 		if(!$this->getSetting('addable') || !$parent_id || !$template_id) return;
 
@@ -819,7 +825,7 @@ class InputfieldPage extends Inputfield implements ConfigurableModule {
 		foreach($titles as $title) {
 
 			// check if there is an existing page using this title
-			$selector = "include=all, templates_id={$this->template_id}, title=" . $this->wire('sanitizer')->selectorValue($title); 
+			$selector = "include=all, templates_id={$templates_id_selector}, title=" . $this->wire('sanitizer')->selectorValue($title); 
 			$existingPage = $parent->child($selector);
 			if($existingPage->id) {
 				// use existing page
@@ -921,8 +927,13 @@ class InputfieldPage extends Inputfield implements ConfigurableModule {
 		$field->required = false;
 		$fieldset->append($field); 
 
-		/** @var InputfieldSelect $field */
-		$field = $this->modules->get('InputfieldAsmSelect');
+		if ( $this->config->multiTemplateSelectablePages === true ) {
+			/** @var InputfieldAsmSelect $field */
+			$field = $this->modules->get('InputfieldAsmSelect');
+		} else {
+			/** @var InputfieldSelect $field */
+			$field = $this->modules->get('InputfieldSelect');
+		}
 		$field->setAttribute('name', 'template_id'); 
 		$field->label = $this->_('Template of selectable page(s)');
 		if(is_array($this->template_id)) {
