@@ -154,6 +154,19 @@ $config->timezone = 'America/New_York';
 $config->dateFormat = 'Y-m-d H:i:s';
 
 
+/**
+ * Multiple templates for InputfieldPage
+ * 
+ * Allow selecting multiple templates for option "Selectable Pages - Template of selectable page(s)"
+ * for InputfieldPage.
+ * 
+ * This is still experimental and might cause some weird behavior.
+ * 
+ * @var bool
+ */
+$config->multiTemplateSelectablePages = false;
+
+
 
 
 /*** 3. SESSION *********************************************************************************/
