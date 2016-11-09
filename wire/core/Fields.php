@@ -191,7 +191,8 @@ class Fields extends WireSaveableItems {
 		
 		// If template_id is an array but there is just one item in array, store value as int.
 		if(is_array($item->template_id) && count($item->template_id) === 1) {
-			$item->template_id = array_pop($item->template_id);
+			$single_template_id = $item->template_id[0];
+			$item->template_id = $single_template_id;
 		}
 
 		if(!$item->type) throw new WireException("Can't save a Field that doesn't have it's 'type' property set to a Fieldtype"); 
