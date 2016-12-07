@@ -30,6 +30,8 @@ class PagesLoaderCache extends Wire {
 	 */
 	protected $pages;
 
+  protected $maxCachedPages;
+
 	/**
 	 * Construct
 	 * 
@@ -38,6 +40,7 @@ class PagesLoaderCache extends Wire {
 	 */
 	public function __construct(Pages $pages) {
 		$this->pages = $pages;
+    $this->maxCachedPages = ($this->config->maxCachedPages === null) ? 100 : intval($this->config->maxCachedPages);
 	}
 	
 	/**
@@ -69,6 +72,9 @@ class PagesLoaderCache extends Wire {
 	 *
 	 */
 	public function cache(Page $page) {
+    if($this->cacheFull()) {
+      return;
+    }
 		if($page->id) $this->pageIdCache[$page->id] = $page;
 	}
 
@@ -143,6 +149,9 @@ class PagesLoaderCache extends Wire {
 	 *
 	 */
 	public function selectorCache($selector, array $options, PageArray $pages) {
+    if($this->cacheFull($pages->count())) {
+      return;
+    }
 
 		// get the string that will be used for caching
 		$selector = $this->getSelectorCache($selector, $options, true);
@@ -223,4 +232,13 @@ class PagesLoaderCache extends Wire {
 
 		return null;
 	}
+
+  protected function cacheFull($c = 1)
+  {
+    if($this->maxCachedPages === 0) {
+      return false;
+    }
+
+    return (count($this->pageIdCache) + $c) >= $this->maxCachedPages;
+  }
 }
