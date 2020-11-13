@@ -1,5 +1,5 @@
 {
-  "name": "processwire/processwire",
+  "name": "avoineoy/processwire-legacy-fork",
   "type": "library",
   "description": "ProcessWire CMS/CMF",
   "keywords": [ "processwire", "cms","cmf", "content management system" ],
